@@ -1,0 +1,236 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #1a1a2e;
+  color: #eee;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+#app {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.screen {
+  display: block;
+}
+
+.screen.hidden {
+  display: none;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+}
+
+h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+}
+
+.card {
+  background: #16213e;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #0f3460;
+  border-radius: 8px;
+  background: #0f3460;
+  color: #eee;
+  margin-bottom: 0.75rem;
+}
+
+input::placeholder {
+  color: #888;
+}
+
+input[type="checkbox"] {
+  width: auto;
+  margin: 0 0.5rem 0 0;
+  vertical-align: middle;
+}
+
+button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #e94560;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button.primary {
+  background: #0f3460;
+  margin-bottom: 0.5rem;
+}
+
+#copy-code {
+  width: auto;
+  padding: 0.5rem 1rem;
+  margin-left: 0.5rem;
+}
+
+.lobby-code {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.lobby-code strong {
+  letter-spacing: 0.25em;
+}
+
+#player-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+}
+
+#player-list li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #0f3460;
+}
+
+#player-list li:last-child {
+  border-bottom: none;
+}
+
+.error {
+  color: #e94560;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#leave-lobby {
+  background: transparent;
+  border: 2px solid #e94560;
+  color: #e94560;
+  margin-top: 0.5rem;
+}
+
+.choice-btn {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+#btn-stay {
+  background: #0f3460;
+}
+
+#btn-leave {
+  background: #e94560;
+}
+
+#game-players {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.player-chip {
+  background: #16213e;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.player-chip.you {
+  border: 2px solid #e94560;
+}
+
+#game-pot {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+#game-tracker-content {
+  font-size: 0.9rem;
+}
+
+#game-tracker-content .tracker-treasures,
+#game-tracker-content .tracker-hazards {
+  margin: 0 0 0.5rem;
+}
+
+#game-tracker-content .tracker-hazards:last-child {
+  margin-bottom: 0;
+}
+
+.card-reveal {
+  text-align: center;
+  padding: 1.5rem;
+  background: #16213e;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.card-reveal.treasure {
+  border: 2px solid #ffd700;
+}
+
+.card-reveal.hazard {
+  border: 2px solid #e94560;
+}
+
+.card-reveal.artifact {
+  border: 2px solid #9b59b6;
+}
+
+.card-reveal.multiplier {
+  border: 2px solid #27ae60;
+}
+
+#game-tracker-content .tracker-artifacts,
+#game-tracker-content .tracker-multiplier {
+  margin: 0 0 0.5rem;
+}
+
+label.block {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+#game-over {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+#game-over h2 {
+  margin-bottom: 1rem;
+}
+
+#game-over ol {
+  text-align: left;
+  padding-left: 1.5rem;
+}

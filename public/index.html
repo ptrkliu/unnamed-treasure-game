@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Incan Gold</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div id="app">
+    <div id="landing" class="screen">
+      <h1>Incan Gold</h1>
+      <div class="card">
+        <h2>Create Lobby</h2>
+        <form id="create-form">
+          <input type="text" id="create-name" placeholder="Your name" required maxlength="20">
+          <button type="submit">Create</button>
+        </form>
+      </div>
+      <div class="card">
+        <h2>Join Lobby</h2>
+        <form id="join-form">
+          <input type="text" id="join-code" placeholder="Lobby code" required maxlength="6">
+          <input type="text" id="join-name" placeholder="Your name" required maxlength="20">
+          <button type="submit">Join</button>
+        </form>
+      </div>
+      <p id="error" class="error hidden"></p>
+    </div>
+
+    <div id="lobby" class="screen hidden">
+      <h1>Lobby</h1>
+      <div class="lobby-code">
+        <span>Code: </span>
+        <strong id="lobby-code">------</strong>
+        <button id="copy-code" type="button">Copy</button>
+      </div>
+      <div class="card">
+        <h2>Players</h2>
+        <ul id="player-list"></ul>
+        <label id="artifact-toggle-wrap" class="host-only hidden">
+          <input type="checkbox" id="artifact-toggle" /> Include artifacts
+        </label>
+        <label id="multiplier-toggle-wrap" class="host-only hidden">
+          <input type="checkbox" id="multiplier-toggle" /> Include 2× treasure multiplier card
+        </label>
+        <button id="start-game" type="button" class="primary hidden">Start Game</button>
+        <button id="leave-lobby" type="button">Leave</button>
+      </div>
+      <p id="lobby-error" class="error hidden"></p>
+    </div>
+
+    <div id="game" class="screen hidden">
+      <h1>Incan Gold</h1>
+      <div id="game-status"></div>
+      <div id="game-players"></div>
+      <div id="game-pot"></div>
+      <div id="game-tracker" class="card">
+        <h2>Revealed</h2>
+        <div id="game-tracker-content"></div>
+      </div>
+      <div id="game-choices" class="hidden">
+        <button id="btn-stay" class="choice-btn">Stay</button>
+        <button id="btn-leave" class="choice-btn">Leave</button>
+      </div>
+      <div id="game-reveal" class="hidden"></div>
+      <div id="game-over" class="hidden"></div>
+    </div>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/tracker.js"></script>
+  <script src="/js/lobby-format.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/lobby.js"></script>
+  <script src="/js/game.js"></script>
+</body>
+</html>
