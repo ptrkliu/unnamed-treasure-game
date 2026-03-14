@@ -1,7 +1,7 @@
 {
   "name": "incan-gold",
   "version": "1.0.0",
-  "description": "Multiplayer Incan Gold web game",
+  "description": "Multiplayer Unnamed Treasure Game (not copyright) web game",
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
