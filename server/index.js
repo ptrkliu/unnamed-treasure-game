@@ -147,6 +147,7 @@ io.on('connection', (socket) => {
         choices: { ...game.choices },
       });
 
+      const delay = active.length >= 2 ? 2000 : 0;
       setTimeout(() => {
         const result = processTurn(game);
         game.choices = {};
@@ -197,7 +198,7 @@ io.on('connection', (socket) => {
             turnPhase: 'choosing',
           });
         }
-      }, 2000);
+      }, delay);
     }
   });
 
@@ -266,6 +267,7 @@ io.on('connection', (socket) => {
             game.status = 'revealing';
             log.debug('Emitting choicesRevealed (disconnect)', { gameId: game.id });
             io.to(game.id).emit('choicesRevealed', { choices: { ...game.choices } });
+            const delay = inRound.length >= 2 ? 2000 : 0;
             setTimeout(() => {
               const result = processTurn(game);
               game.choices = {};
@@ -314,7 +316,7 @@ io.on('connection', (socket) => {
                   turnPhase: 'choosing',
                 });
               }
-            }, 2000);
+            }, delay);
           }
         }
       }

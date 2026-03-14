@@ -191,6 +191,13 @@ button.primary {
   margin-bottom: 0;
 }
 
+.countdown {
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 700;
+  margin-top: 1rem;
+}
+
 .card-reveal {
   text-align: center;
   padding: 1.5rem;

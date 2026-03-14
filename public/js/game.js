@@ -1,5 +1,9 @@
 const Game = {
   init(data) {
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+      this.countdownInterval = null;
+    }
     this.players = data.players || [];
     this.sharedPot = data.sharedPot || 0;
     document.getElementById('game-choices').classList.add('hidden');
@@ -33,6 +37,10 @@ const Game = {
   },
 
   showChoices(choices) {
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+      this.countdownInterval = null;
+    }
     document.getElementById('game-choices').classList.add('hidden');
     const names = {};
     (this.players || []).forEach((p) => (names[p.id] = p.name));
@@ -42,8 +50,24 @@ const Game = {
           `${names[id] || '?'}: ${choice === 'stay' ? 'Stay' : 'Leave'}`
       )
       .join('<br>');
-    document.getElementById('game-reveal').innerHTML = `<p>${html}</p>`;
+    const playerCount = Object.keys(choices || {}).length;
+    const showCountdown = playerCount >= 2;
+    document.getElementById('game-reveal').innerHTML = showCountdown
+      ? `<p>${html}</p><div class="countdown" id="game-countdown">2</div>`
+      : `<p>${html}</p>`;
     document.getElementById('game-reveal').classList.remove('hidden');
+    if (showCountdown) {
+      let n = 2;
+      this.countdownInterval = setInterval(() => {
+        n -= 1;
+        const el = document.getElementById('game-countdown');
+        if (el) el.textContent = n > 0 ? String(n) : '';
+        if (n <= 0 && this.countdownInterval) {
+          clearInterval(this.countdownInterval);
+          this.countdownInterval = null;
+        }
+      }, 1000);
+    }
   },
 
   showCard(data) {
