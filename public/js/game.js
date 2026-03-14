@@ -112,7 +112,7 @@ const Game = {
     const winner = scores[0];
     const hasMoreRounds = data.hasMoreRounds === true;
     const roundNumber = data.roundNumber ?? 1;
-    const totalRounds = data.totalRounds ?? 5;
+    const totalRounds = data.totalRounds ?? 4;
     const artifactEnabled = data.artifactEnabled ?? false;
     const multiplierEnabled = data.multiplierEnabled ?? false;
     const endingMsg = data.endingHazard

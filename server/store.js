@@ -83,7 +83,7 @@ function createGame(lobby, options = {}) {
     })),
     hostId: lobby.hostId,
     roundNumber: 1,
-    totalRounds: 5,
+    totalRounds: 4,
     sharedPot: 0,
     artifactEnabled,
     multiplierEnabled,
