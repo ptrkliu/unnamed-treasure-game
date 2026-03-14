@@ -317,6 +317,23 @@ describe('processTurn', () => {
     expect(game.players[0].treasuresInFront).toBe(15); // 5 + 10
     expect(game.players[1].treasuresInFront).toBe(15);
   });
+
+  it('playerScaleMultiplier doubles treasure for 5-8 players', () => {
+    const game = makeGame([{ type: 'treasure', value: 10 }], ['p1', 'p2', 'p3', 'p4', 'p5']);
+    game.playerScaleMultiplier = 2;
+    game.choices = { p1: 'stay', p2: 'stay', p3: 'stay', p4: 'stay', p5: 'stay' };
+    processTurn(game);
+    expect(game.players[0].treasuresInFront).toBe(4); // 20/5
+    expect(game.players[4].treasuresInFront).toBe(4);
+  });
+
+  it('playerScaleMultiplier doubles artifact pool for 5-8 players', () => {
+    const game = makeGame([{ type: 'artifact', value: 12 }], ['p1', 'p2', 'p3', 'p4', 'p5']);
+    game.playerScaleMultiplier = 2;
+    game.choices = { p1: 'stay', p2: 'stay', p3: 'stay', p4: 'stay', p5: 'stay' };
+    processTurn(game);
+    expect(game.artifactPool).toBe(24);
+  });
 });
 
 describe('checkGameOver', () => {

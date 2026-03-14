@@ -56,7 +56,8 @@ function processTurn(game) {
   } else if (card.type === 'treasure') {
     game.treasuresRevealed = game.treasuresRevealed || [];
     game.treasuresRevealed.push(card.value);
-    const effectiveValue = card.value * (game.treasureMultiplier || 1);
+    const scale = game.playerScaleMultiplier ?? 1;
+    const effectiveValue = card.value * (game.treasureMultiplier || 1) * scale;
     if (stayed.length > 0) {
       const share = Math.floor(effectiveValue / stayed.length);
       const remainder = effectiveValue % stayed.length;
@@ -67,7 +68,8 @@ function processTurn(game) {
       game.sharedPot += remainder;
     }
   } else if (card.type === 'artifact') {
-    game.artifactPool += card.value;
+    const scale = game.playerScaleMultiplier ?? 1;
+    game.artifactPool += card.value * scale;
   } else {
     game.hazardCounts[card.hazard] = (game.hazardCounts[card.hazard] || 0) + 1;
     if (game.hazardCounts[card.hazard] === 2) {

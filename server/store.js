@@ -84,6 +84,7 @@ function createGame(lobby, options = {}) {
     multiplierEnabled,
     artifactPool: 0,
     treasureMultiplier: 1,
+    playerScaleMultiplier: Math.ceil(lobby.players.length / 4),
     hazardCounts: {},
     treasuresRevealed: [],
     deck: null,

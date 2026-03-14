@@ -7,7 +7,7 @@ const Game = {
     document.getElementById('game-over').classList.add('hidden');
     this.renderPlayers();
     this.renderPot();
-    this.renderTracker(data.hazardCounts, data.treasuresRevealed, data.artifactPool, data.treasureMultiplier ?? 1);
+    this.renderTracker(data.hazardCounts, data.treasuresRevealed, data.artifactPool, data.treasureMultiplier ?? 1, data.playerScaleMultiplier ?? 1);
     document.getElementById('game-status').textContent = 'Choose: Stay or Leave?';
     document.getElementById('game-choices').classList.remove('hidden');
   },
@@ -27,9 +27,9 @@ const Game = {
     el.textContent = this.sharedPot ? `Shared pot: ${this.sharedPot}` : '';
   },
 
-  renderTracker(hazardCounts = {}, treasuresRevealed = [], artifactPool = 0, treasureMultiplier = 1) {
+  renderTracker(hazardCounts = {}, treasuresRevealed = [], artifactPool = 0, treasureMultiplier = 1, playerScaleMultiplier = 1) {
     const el = document.getElementById('game-tracker-content');
-    el.innerHTML = formatTrackerContent(hazardCounts, treasuresRevealed, artifactPool, treasureMultiplier);
+    el.innerHTML = formatTrackerContent(hazardCounts, treasuresRevealed, artifactPool, treasureMultiplier, playerScaleMultiplier);
   },
 
   showChoices(choices) {
@@ -64,7 +64,7 @@ const Game = {
     document.getElementById('game-reveal').classList.remove('hidden');
     this.renderPlayers();
     this.renderPot();
-    this.renderTracker(data.hazardCounts, data.treasuresRevealed, data.artifactPool, data.treasureMultiplier);
+    this.renderTracker(data.hazardCounts, data.treasuresRevealed, data.artifactPool, data.treasureMultiplier, data.playerScaleMultiplier ?? 1);
 
     const active = (this.players || []).filter(
       (p) => p.status === 'active' && !p.leftThisTurn
@@ -84,7 +84,7 @@ const Game = {
   showGameOver(data) {
     document.getElementById('game-choices').classList.add('hidden');
     document.getElementById('game-reveal').classList.add('hidden');
-    this.renderTracker(data.hazardCounts || {}, data.treasuresRevealed || [], data.artifactPool, data.treasureMultiplier ?? 1);
+    this.renderTracker(data.hazardCounts || {}, data.treasuresRevealed || [], data.artifactPool, data.treasureMultiplier ?? 1, data.playerScaleMultiplier ?? 1);
     const scores = data.finalScores || [];
     const winner = scores[0];
     const hasMoreRounds = data.hasMoreRounds === true;

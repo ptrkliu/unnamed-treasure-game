@@ -153,6 +153,48 @@ describe('createGame', () => {
     expect(game.multiplierEnabled).toBe(true);
     expect(game.treasureMultiplier).toBe(1);
   });
+
+  it('sets playerScaleMultiplier to 2 for 5-8 players', () => {
+    const lobby = createLobby('h1', 'Host');
+    for (let i = 2; i <= 5; i++) joinLobby(lobby.code, `p${i}`, `Player${i}`);
+    const game = createGame(lobby);
+    expect(game.playerScaleMultiplier).toBe(2);
+  });
+
+  it('sets playerScaleMultiplier to 3 for 9-12 players', () => {
+    const lobby = createLobby('h1', 'Host');
+    for (let i = 2; i <= 9; i++) joinLobby(lobby.code, `p${i}`, `Player${i}`);
+    const game = createGame(lobby);
+    expect(game.playerScaleMultiplier).toBe(3);
+  });
+
+  it('sets playerScaleMultiplier to 1 for 1-4 players', () => {
+    const lobby = createLobby('h1', 'Host');
+    joinLobby(lobby.code, 'p2', 'Bob');
+    const game = createGame(lobby);
+    expect(game.playerScaleMultiplier).toBe(1);
+  });
+
+  it('sets playerScaleMultiplier to 4 for 13-16 players', () => {
+    const lobby = createLobby('h1', 'Host');
+    for (let i = 2; i <= 13; i++) joinLobby(lobby.code, `p${i}`, `Player${i}`);
+    const game = createGame(lobby);
+    expect(game.playerScaleMultiplier).toBe(4);
+  });
+
+  it('sets playerScaleMultiplier to 5 for 17-20 players', () => {
+    const lobby = createLobby('h1', 'Host');
+    for (let i = 2; i <= 17; i++) joinLobby(lobby.code, `p${i}`, `Player${i}`);
+    const game = createGame(lobby);
+    expect(game.playerScaleMultiplier).toBe(5);
+  });
+
+  it('sets playerScaleMultiplier to 6 for 21-24 players', () => {
+    const lobby = createLobby('h1', 'Host');
+    for (let i = 2; i <= 21; i++) joinLobby(lobby.code, `p${i}`, `Player${i}`);
+    const game = createGame(lobby);
+    expect(game.playerScaleMultiplier).toBe(6);
+  });
 });
 
 describe('getGame', () => {

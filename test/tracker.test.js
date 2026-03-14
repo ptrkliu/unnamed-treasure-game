@@ -85,4 +85,15 @@ describe('formatTrackerContent', () => {
     const html = formatTrackerContent({}, [10], 0);
     expect(html).not.toContain('Treasure multiplier');
   });
+
+  it('shows player scaling when greater than 1', () => {
+    const html = formatTrackerContent({}, [10], 0, 1, 2);
+    expect(html).toContain('<strong>Player scaling:</strong> 2×');
+    expect(html).toContain('tracker-player-scale');
+  });
+
+  it('omits player scaling when 1', () => {
+    const html = formatTrackerContent({}, [10], 0, 1, 1);
+    expect(html).not.toContain('Player scaling');
+  });
 });

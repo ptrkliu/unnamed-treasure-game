@@ -2,7 +2,7 @@
  * Pure formatting logic for the game tracker (treasures and hazards).
  * Used by renderTracker in game.js; testable without DOM.
  */
-function formatTrackerContent(hazardCounts = {}, treasuresRevealed = [], artifactPool = 0, treasureMultiplier = 1) {
+function formatTrackerContent(hazardCounts = {}, treasuresRevealed = [], artifactPool = 0, treasureMultiplier = 1, playerScaleMultiplier = 1) {
   const treasures =
     treasuresRevealed.length > 0
       ? [...treasuresRevealed].sort((a, b) => a - b).join(', ')
@@ -22,11 +22,16 @@ function formatTrackerContent(hazardCounts = {}, treasuresRevealed = [], artifac
     treasureMultiplier > 1
       ? `<p class="tracker-multiplier"><strong>Treasure multiplier:</strong> ${treasureMultiplier}×</p>`
       : '';
+  const playerScaleLine =
+    playerScaleMultiplier > 1
+      ? `<p class="tracker-player-scale"><strong>Player scaling:</strong> ${playerScaleMultiplier}×</p>`
+      : '';
   return `
       <p class="tracker-treasures"><strong>Treasures:</strong> ${treasures}</p>
       <p class="tracker-hazards"><strong>Hazards:</strong> ${hazards || 'None yet'}</p>
       ${artifactLine}
       ${multiplierLine}
+      ${playerScaleLine}
     `;
 }
 
