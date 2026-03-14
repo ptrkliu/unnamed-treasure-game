@@ -1,3 +1,5 @@
+const log = require('./logger');
+
 const lobbies = new Map();
 const games = new Map();
 
@@ -23,6 +25,7 @@ function createLobby(hostId, hostName) {
     status: 'waiting',
   };
   lobbies.set(code, lobby);
+  log.debug('Lobby created', { code, hostId, hostName });
   return lobby;
 }
 
@@ -37,6 +40,7 @@ function joinLobby(code, playerId, playerName) {
   const nameExists = lobby.players.some((p) => p.name.toLowerCase() === playerName.toLowerCase());
   if (nameExists) return { error: 'Name already taken' };
   lobby.players.push({ id: playerId, name: playerName });
+  log.debug('Player joined lobby', { code, playerId, playerName, playerCount: lobby.players.length });
   return { lobby };
 }
 
@@ -46,6 +50,7 @@ function leaveLobby(code, playerId) {
   lobby.players = lobby.players.filter((p) => p.id !== playerId);
   if (lobby.players.length === 0) {
     lobbies.delete(code);
+    log.debug('Lobby disbanded (last player left)', { code });
     return { disbanded: true };
   }
   if (lobby.hostId === playerId) {
@@ -94,6 +99,7 @@ function createGame(lobby, options = {}) {
   };
   games.set(gameId, game);
   lobbies.delete(lobby.code);
+  log.debug('Game created', { gameId, playerCount: game.players.length, artifactEnabled, multiplierEnabled });
   return game;
 }
 
@@ -110,6 +116,7 @@ function getGameByPlayerId(playerId) {
 
 function deleteGame(gameId) {
   games.delete(gameId);
+  log.debug('Game deleted', { gameId });
 }
 
 module.exports = {

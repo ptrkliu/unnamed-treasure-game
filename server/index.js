@@ -2,6 +2,7 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const { Server } = require('socket.io');
+const log = require('./logger');
 const {
   createLobby,
   getLobby,
@@ -38,16 +39,21 @@ app.get('*', (req, res) => {
 });
 
 io.on('connection', (socket) => {
+  log.info('Socket connected', { socketId: socket.id });
+
   socket.on('createLobby', (data, cb) => {
+    log.debug('Received createLobby', { socketId: socket.id, data });
     const name = (data?.name || '').trim();
     if (!name) return cb?.({ error: 'Name required' });
     const lobby = createLobby(socket.id, name);
     socket.join(lobby.code);
     socket.lobbyCode = lobby.code;
+    log.debug('Emitted createLobby callback (success)', { lobbyCode: lobby.code });
     cb?.({ lobby: { code: lobby.code, players: lobby.players, hostId: lobby.hostId } });
   });
 
   socket.on('joinLobby', (data, cb) => {
+    log.debug('Received joinLobby', { socketId: socket.id, data });
     const code = (data?.code || '').trim().toUpperCase();
     const name = (data?.name || '').trim();
     if (!code || !name) return cb?.({ error: 'Code and name required' });
@@ -55,6 +61,7 @@ io.on('connection', (socket) => {
     if (result.error) return cb?.({ error: result.error });
     socket.join(code);
     socket.lobbyCode = code;
+    log.debug('Emitting lobbyUpdated', { room: code, players: result.lobby.players.length });
     io.to(code).emit('lobbyUpdated', {
       players: result.lobby.players,
       hostId: result.lobby.hostId,
@@ -64,14 +71,17 @@ io.on('connection', (socket) => {
   });
 
   socket.on('leaveLobby', (cb) => {
+    log.debug('Received leaveLobby', { socketId: socket.id });
     const code = socket.lobbyCode;
     if (!code) return cb?.({ error: 'Not in lobby' });
     const result = leaveLobby(code, socket.id);
     socket.leave(code);
     socket.lobbyCode = null;
     if (result.disbanded) {
+      log.debug('Emitting lobbyClosed', { room: code });
       io.to(code).emit('lobbyClosed');
     } else {
+      log.debug('Emitting lobbyUpdated (after leave)', { room: code });
       io.to(code).emit('lobbyUpdated', {
         players: result.lobby.players,
         hostId: result.lobby.hostId,
@@ -82,6 +92,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('startGame', (data, cb) => {
+    log.debug('Received startGame', { socketId: socket.id, data });
     const lobby = getLobbyByPlayerId(socket.id);
     if (!lobby) { if (typeof cb === 'function') cb({ error: 'Not in lobby' }); return; }
     if (lobby.hostId !== socket.id) { if (typeof cb === 'function') cb({ error: 'Only host can start' }); return; }
@@ -98,6 +109,7 @@ io.on('connection', (socket) => {
       io.sockets.sockets.get(p.id)?.join(game.id);
     }
 
+    log.debug('Emitting gameStarted', { gameId: game.id, playerCount: game.players.length });
     io.to(game.id).emit('gameStarted', {
       gameId: game.id,
       players: game.players,
@@ -115,6 +127,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('playerChoice', (data, cb) => {
+    log.debug('Received playerChoice', { socketId: socket.id, choice: data?.choice });
     const game = getGameByPlayerId(socket.id);
     if (!game) return cb?.({ error: 'Not in game' });
     if (game.status !== 'choosing') return cb?.({ error: 'Not choosing phase' });
@@ -129,6 +142,7 @@ io.on('connection', (socket) => {
     const allChosen = active.every((p) => game.choices[p.id] != null);
     if (allChosen) {
       game.status = 'revealing';
+      log.debug('Emitting choicesRevealed', { gameId: game.id });
       io.to(game.id).emit('choicesRevealed', {
         choices: { ...game.choices },
       });
@@ -148,6 +162,7 @@ io.on('connection', (socket) => {
               ? result.card.hazard
               : null;
           const hasMoreRounds = game.roundNumber < game.totalRounds;
+          log.debug('Emitting gameOver', { gameId: game.id, hasMoreRounds });
           io.to(game.id).emit('gameOver', {
             finalScores,
             winner: winner?.id,
@@ -169,6 +184,7 @@ io.on('connection', (socket) => {
           }
         } else {
           game.status = 'choosing';
+          log.debug('Emitting cardRevealed', { gameId: game.id, cardType: result.card?.type });
           io.to(game.id).emit('cardRevealed', {
             card: result.card,
             players: game.players,
@@ -186,6 +202,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('nextRound', (data, cb) => {
+    log.debug('Received nextRound', { socketId: socket.id, data });
     const game = getGameByPlayerId(socket.id);
     if (!game) return cb?.({ error: 'Not in game' });
     if (game.status !== 'finished') return cb?.({ error: 'Game not finished' });
@@ -201,6 +218,7 @@ io.on('connection', (socket) => {
     resetForNextRound(game);
     game.status = 'choosing';
 
+    log.debug('Emitting gameStarted (next round)', { gameId: game.id });
     io.to(game.id).emit('gameStarted', {
       gameId: game.id,
       players: game.players,
@@ -218,12 +236,15 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
+    log.info('Socket disconnected', { socketId: socket.id });
     const lobby = getLobbyByPlayerId(socket.id);
     if (lobby) {
       const result = leaveLobby(lobby.code, socket.id);
       if (result.disbanded) {
+        log.debug('Emitting lobbyClosed (disconnect)', { room: lobby.code });
         io.to(lobby.code).emit('lobbyClosed');
       } else {
+        log.debug('Emitting lobbyUpdated (disconnect)', { room: lobby.code });
         io.to(lobby.code).emit('lobbyUpdated', {
           players: result.lobby.players,
           hostId: result.lobby.hostId,
@@ -243,6 +264,7 @@ io.on('connection', (socket) => {
             const allChosen = inRound.every((p) => game.choices[p.id] != null);
           if (allChosen) {
             game.status = 'revealing';
+            log.debug('Emitting choicesRevealed (disconnect)', { gameId: game.id });
             io.to(game.id).emit('choicesRevealed', { choices: { ...game.choices } });
             setTimeout(() => {
               const result = processTurn(game);
@@ -257,6 +279,7 @@ io.on('connection', (socket) => {
                     ? result.card.hazard
                     : null;
                 const hasMoreRounds = game.roundNumber < game.totalRounds;
+                log.debug('Emitting gameOver', { gameId: game.id, hasMoreRounds });
                 io.to(game.id).emit('gameOver', {
                   finalScores,
                   winner: finalScores[0]?.id,
@@ -278,6 +301,7 @@ io.on('connection', (socket) => {
                 }
               } else {
                 game.status = 'choosing';
+                log.debug('Emitting cardRevealed (disconnect)', { gameId: game.id });
                 io.to(game.id).emit('cardRevealed', {
                   card: result.card,
                   players: game.players,
@@ -300,5 +324,5 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  log.info('Server listening', { port: PORT });
 });

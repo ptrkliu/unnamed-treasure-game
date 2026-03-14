@@ -1,4 +1,20 @@
-const socket = io();
+const rawSocket = io();
+
+// Wrap socket to log all emitted and received events
+const originalEmit = rawSocket.emit.bind(rawSocket);
+rawSocket.emit = function (event, ...args) {
+  incanLog.debug('emit', event, args.length > 0 ? args : '');
+  return originalEmit(event, ...args);
+};
+const originalOn = rawSocket.on.bind(rawSocket);
+rawSocket.on = function (event, fn) {
+  return originalOn(event, function (...args) {
+    incanLog.debug('received', event, args.length > 0 ? args : '');
+    return fn.apply(this, args);
+  });
+};
+
+const socket = rawSocket;
 
 let state = {
   lobby: null,
@@ -19,6 +35,8 @@ function showError(elId, msg) {
   el.textContent = msg || '';
   el.classList.toggle('hidden', !msg);
 }
+
+incanLog.info('App initialized');
 
 document.getElementById('create-form')?.addEventListener('submit', (e) => {
   e.preventDefault();

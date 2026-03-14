@@ -1,3 +1,5 @@
+const log = require('./logger');
+
 const HAZARDS = ['fire', 'rocks', 'snakes', 'spiders', 'mummies'];
 
 const ARTIFACT_VALUES = [10, 12, 14];
@@ -24,6 +26,7 @@ function createDeck(artifactEnabled = false, multiplierEnabled = false) {
     const j = Math.floor(Math.random() * (i + 1));
     [cards[i], cards[j]] = [cards[j], cards[i]];
   }
+  log.debug('Deck created', { cardCount: cards.length, artifactEnabled, multiplierEnabled });
   return cards;
 }
 
@@ -105,6 +108,7 @@ function processTurn(game) {
     game.artifactPool = 0;
   }
 
+  log.debug('Turn processed', { cardType: card?.type || card?.hazard, stayed: stayed.length, left: left.length });
   return { card, stayed, left };
 }
 
@@ -138,6 +142,7 @@ function resetForNextRound(game) {
     p.status = 'active';
     p.leftThisTurn = false;
   }
+  log.debug('Round reset', { gameId: game.id, roundNumber: game.roundNumber });
   return game;
 }
 
