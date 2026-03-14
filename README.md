@@ -1,6 +1,6 @@
-# Incan Gold
+# Unnamed Treasure Game
 
-A multiplayer web game based on Incan Gold (Diamant). Create a lobby, share the code with friends, and play on mobile or desktop.
+A multiplayer web game. Create a lobby, share the code with friends, and play on mobile or desktop.
 
 ## Setup
 
