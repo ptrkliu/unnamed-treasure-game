@@ -171,6 +171,29 @@ describe('processTurn', () => {
     expect(game.players[1].status).toBe('left');
   });
 
+  it('uses player\'s final choice when they change vote (stay then leave)', () => {
+    const game = makeGame([{ type: 'treasure', value: 10 }]);
+    game.players[0].treasuresInFront = 5;
+    game.choices = { p1: 'stay', p2: 'stay' };
+    game.choices['p1'] = 'leave'; // simulate player changing vote before reveal
+    const result = processTurn(game);
+    expect(game.players[0].status).toBe('left');
+    expect(game.players[0].score).toBe(5);
+    expect(game.players[0].treasuresInFront).toBe(0);
+    expect(game.players[1].treasuresInFront).toBe(10);
+  });
+
+  it('uses player\'s final choice when they change vote (leave then stay)', () => {
+    const game = makeGame([{ type: 'treasure', value: 10 }]);
+    game.choices = { p1: 'leave', p2: 'stay' };
+    game.choices['p1'] = 'stay'; // simulate player changing vote before reveal
+    const result = processTurn(game);
+    expect(game.players[0].status).toBe('active');
+    expect(game.players[0].score).toBe(0);
+    expect(game.players[0].treasuresInFront).toBe(5);
+    expect(game.players[1].treasuresInFront).toBe(5);
+  });
+
   it('increments hazard count on first hazard', () => {
     const game = makeGame([{ type: 'hazard', hazard: 'snakes' }]);
     game.choices = { p1: 'stay', p2: 'stay' };

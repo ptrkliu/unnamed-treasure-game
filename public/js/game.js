@@ -8,7 +8,7 @@ const Game = {
     this.renderPlayers();
     this.renderPot();
     this.renderTracker(data.hazardCounts, data.treasuresRevealed, data.artifactPool, data.treasureMultiplier ?? 1, data.playerScaleMultiplier ?? 1);
-    document.getElementById('game-status').textContent = 'Choose: Stay or Leave?';
+    updateChoiceUI(null);
     document.getElementById('game-choices').classList.remove('hidden');
   },
 
@@ -72,8 +72,7 @@ const Game = {
     const canPlay = active.some((p) => p.id === state.playerId);
 
     if (canPlay && data.turnPhase === 'choosing') {
-      document.getElementById('game-status').textContent =
-        'Choose: Stay or Leave?';
+      updateChoiceUI(null);
       document.getElementById('game-choices').classList.remove('hidden');
     } else if (!canPlay) {
       document.getElementById('game-status').textContent =
@@ -139,15 +138,13 @@ const Game = {
 document.getElementById('btn-stay')?.addEventListener('click', () => {
   socket.emit('playerChoice', { choice: 'stay' }, (res) => {
     if (res?.error) return;
-    document.getElementById('game-choices').classList.add('hidden');
-    document.getElementById('game-status').textContent = 'Waiting for others...';
+    updateChoiceUI('stay');
   });
 });
 
 document.getElementById('btn-leave')?.addEventListener('click', () => {
   socket.emit('playerChoice', { choice: 'leave' }, (res) => {
     if (res?.error) return;
-    document.getElementById('game-choices').classList.add('hidden');
-    document.getElementById('game-status').textContent = 'You left. Waiting...';
+    updateChoiceUI('leave');
   });
 });

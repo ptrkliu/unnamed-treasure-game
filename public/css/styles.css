@@ -149,6 +149,11 @@ button.primary {
   background: #e94560;
 }
 
+.choice-btn.selected {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
 #game-players {
   display: flex;
   flex-wrap: wrap;

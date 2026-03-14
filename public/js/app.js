@@ -9,7 +9,8 @@ rawSocket.emit = function (event, ...args) {
 const originalOn = rawSocket.on.bind(rawSocket);
 rawSocket.on = function (event, fn) {
   return originalOn(event, function (...args) {
-    incanLog.debug('received', event, args.length > 0 ? args : '');
+    const toLog = args.length > 0 ? (event === 'gameStarted' ? '[game data]' : args) : '';
+    incanLog.debug('received', event, toLog);
     return fn.apply(this, args);
   });
 };
